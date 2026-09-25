@@ -285,7 +285,7 @@ footer::before {
   50% { opacity: 0.35; transform: scale(0.75); }
 }
 
-/* ============ MOBILE OVERRIDES ============ */
+/* ============ TABLET / MOBILE LAYOUT ============ */
 @media (max-width: 700px) {
   .hero { padding: 130px 20px 40px; }
   .grid { padding: 0 20px; }
@@ -294,7 +294,11 @@ footer::before {
   .footer-line { font-size: 10px; letter-spacing: 3px; gap: 12px; }
 }
 
-@media (max-width: 768px) {
+/* ================================================================
+   MOBILE + TABLET (max 900px) — clean fullscreen, no extra UI
+   Sirf model ka naam + Back button visible rahein
+================================================================ */
+@media (max-width: 900px) {
   /* Fullscreen bar — compact */
   #full .bar {
     padding: 12px 14px;
@@ -315,12 +319,27 @@ footer::before {
     gap: 10px;
   }
 
-  /* Mobile pe HIDE — sirf back + model name */
-  #full .hint { display: none !important; }
-  #full .foot { display: none !important; }
-  .nav-arrow { display: none !important; }
+  /* ⬇️ Sirf model name + back button — baaki sab hide */
+  #full .hint {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+  }
+  #full .foot {
+    display: none !important;
+    visibility: hidden !important;
+  }
+  #full .nav-arrow,
+  .nav-arrow,
+  .nav-arrow.left,
+  .nav-arrow.right {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
 
-  /* Stage */
+  /* Stage — touch support */
   #full .stage {
     touch-action: none;
   }
