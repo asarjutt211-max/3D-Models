@@ -20,7 +20,7 @@ html, body {
 ::-webkit-scrollbar-thumb { background: #2a2a26; border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--lime); }
 
-/* CURSOR */
+/* ============ CURSOR ============ */
 .cur-dot {
   position: fixed; top: 0; left: 0;
   width: 5px; height: 5px; border-radius: 50%;
@@ -43,7 +43,7 @@ body.hov .cur-ring { width: 54px; height: 54px; border-color: var(--lime); }
   html, body { cursor: auto; }
 }
 
-/* HEADER */
+/* ============ HEADER ============ */
 header {
   position: fixed; top: 0; left: 0; right: 0; z-index: 100;
   display: flex; justify-content: space-between; align-items: center;
@@ -74,7 +74,7 @@ nav a.active::after {
   nav a { font-size: 10px; letter-spacing: 1px; }
 }
 
-/* HERO */
+/* ============ HERO ============ */
 .hero {
   padding: 170px 44px 60px;
   max-width: 1400px; margin: 0 auto;
@@ -99,14 +99,14 @@ nav a.active::after {
   line-height: 1.75; max-width: 620px;
 }
 
-/* CONTAINER */
+/* ============ CONTAINER ============ */
 .container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 44px 40px;
 }
 
-/* OWNER */
+/* ============ OWNER ============ */
 .owner {
   display: grid;
   grid-template-columns: 260px 1fr;
@@ -216,7 +216,7 @@ nav a.active::after {
   .owner-tags { justify-content: center; }
 }
 
-/* STORY */
+/* ============ STORY ============ */
 .story {
   padding: 90px 0 40px;
 }
@@ -269,7 +269,44 @@ nav a.active::after {
   .block-body p { font-size: 15px; }
 }
 
-/* STATS */
+/* ================================================================
+   ENJOYMENT TAGLINE
+================================================================ */
+.enjoy-tag {
+  max-width: 900px;
+  margin: 40px auto 0;
+  padding: 22px 30px;
+  text-align: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 3px;
+  color: var(--stone);
+  text-transform: uppercase;
+  line-height: 1.8;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.enjoy-tag .lime {
+  color: var(--lime);
+  font-size: 10px;
+  text-shadow: 0 0 10px var(--lime);
+}
+@media (max-width: 700px) {
+  .enjoy-tag {
+    font-size: 10px;
+    letter-spacing: 2px;
+    padding: 18px 20px;
+    margin: 30px auto 0;
+    gap: 10px;
+  }
+}
+
+/* ============ STATS ============ */
 .stats {
   display: grid;
   grid-template-columns: 1fr auto 1fr auto 1fr auto 1fr;
@@ -314,14 +351,18 @@ nav a.active::after {
   justify-self: center;
 }
 @media (max-width: 900px) {
-  .stats { grid-template-columns: 1fr 1fr; gap: 40px; padding: 60px 0; }
+  /* Mobile: stats vertical, sirf 2 dikhayein */
+  .stats {
+    grid-template-columns: 1fr;
+    gap: 34px;
+    padding: 50px 0 40px;
+    margin: 40px 0 60px;
+  }
   .stat-divider { display: none; }
-}
-@media (max-width: 500px) {
-  .stats { grid-template-columns: 1fr; gap: 34px; }
+  .stat-hide-mobile { display: none !important; }
 }
 
-/* CTA */
+/* ============ CTA ============ */
 .cta {
   padding: 100px 40px 90px;
   text-align: center;
@@ -410,7 +451,7 @@ nav a.active::after {
   .btn { width: 100%; justify-content: center; }
 }
 
-/* FOOTER */
+/* ============ FOOTER ============ */
 footer {
   border-top: 1px solid var(--border);
   padding: 70px 44px 80px;
@@ -451,7 +492,7 @@ footer::before {
   .footer-line { font-size: 10px; letter-spacing: 3px; gap: 12px; }
 }
 
-/* REVEAL */
+/* ============ REVEAL (text only — images stay visible) ============ */
 .reveal {
   opacity: 0;
   transform: translateY(28px);
