@@ -12,6 +12,7 @@ html, body {
   font-family: 'Inter', system-ui, sans-serif;
   overflow-x: hidden; cursor: none;
   -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
 }
 ::selection { background: var(--lime); color: var(--ink); }
 ::-webkit-scrollbar { width: 6px; }
@@ -130,7 +131,6 @@ nav a.active::after {
 }
 .card:hover { border-color: #2e2e28; }
 
-/* preview container */
 .card .preview {
   position: relative;
   width: 100%;
@@ -242,13 +242,6 @@ nav a.active::after {
 .nav-arrow.right { right: 22px; }
 .nav-arrow svg { width: 26px; height: 26px; stroke: currentColor; stroke-width: 2; fill: none; }
 .nav-arrow.disabled { opacity: 0.1; pointer-events: none; }
-@media (max-width: 700px) {
-  .nav-arrow { width: 44px; height: 70px; }
-  .nav-arrow.left { left: 12px; } .nav-arrow.right { right: 12px; }
-  #full .bar { padding: 14px 16px; }
-  #full .bar h2 { font-size: 14px; }
-  #full .back { padding: 8px 12px; font-size: 11px; }
-}
 
 #full .foot {
   padding: 14px 30px; border-top: 1px solid var(--border);
@@ -291,10 +284,44 @@ footer::before {
   0%, 100% { opacity: 1; transform: scale(1); }
   50% { opacity: 0.35; transform: scale(0.75); }
 }
+
+/* ============ MOBILE OVERRIDES ============ */
 @media (max-width: 700px) {
   .hero { padding: 130px 20px 40px; }
   .grid { padding: 0 20px; }
   .enjoy { padding: 30px 20px 12px; }
   footer { padding: 55px 20px 65px; }
   .footer-line { font-size: 10px; letter-spacing: 3px; gap: 12px; }
+}
+
+@media (max-width: 768px) {
+  /* Fullscreen bar — compact */
+  #full .bar {
+    padding: 12px 14px;
+    gap: 12px;
+  }
+  #full .back {
+    padding: 8px 14px;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+  }
+  #full .bar .num {
+    font-size: 10px;
+  }
+  #full .bar h2 {
+    font-size: 14px;
+  }
+  #full .bar .title-group {
+    gap: 10px;
+  }
+
+  /* Mobile pe HIDE — sirf back + model name */
+  #full .hint { display: none !important; }
+  #full .foot { display: none !important; }
+  .nav-arrow { display: none !important; }
+
+  /* Stage */
+  #full .stage {
+    touch-action: none;
+  }
 }
