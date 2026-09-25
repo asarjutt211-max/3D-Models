@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>3D Models — Home</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="index.css" />
+</head>
+<body>
+
+<div class="cur-dot"></div>
+<div class="cur-ring"></div>
+
+<header>
+  <a href="index.html" class="brand">3D MODELS</a>
+  <nav>
+    <a href="index.html" class="active">Home</a>
+    <a href="models.html">Models</a>
+    <a href="animation.html">Animations</a>
+    <a href="about.html">About</a>
+  </nav>
+</header>
+
+<canvas id="warp"></canvas>
+
+<div class="vignette"></div>
+
+<main class="hero">
+  <div class="label">◆ TEN LIVING WORLDS ◆</div>
+  <h1>3D MODELS</h1>
+  <p>Ten worlds, hand-crafted from scratch. 100% live in your browser — no videos. Enter and play.</p>
+  <div class="actions">
+    <a href="animation.html" class="btn primary">ENTER WORLDS <span>→</span></a>
+    <a href="about.html" class="btn">HOW IT'S BUILT</a>
+  </div>
+</main>
+
+<div class="hud">
+  <div class="hud-item"><span class="hud-dot"></span>WARP ACTIVE</div>
+  <div class="hud-item">MOVE MOUSE TO STEER · CLICK TO ACCELERATE</div>
+</div>
+
+<script src="index.js"></script>
+</body>
+</html>

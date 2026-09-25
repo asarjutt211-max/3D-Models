@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>3D Models — Gallery</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="models.css" />
+</head>
+<body>
+
+<div class="cur-dot"></div>
+<div class="cur-ring"></div>
+
+<header>
+  <a href="index.html" class="brand">3D MODELS</a>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="models.html" class="active">Models</a>
+    <a href="animation.html">Animations</a>
+    <a href="about.html">About</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="label">◆ The Collection</div>
+  <h1>10 Interactive Worlds.</h1>
+  <p>Real 3D geometry — click any model to rotate it live in fullscreen.</p>
+</section>
+
+<div class="enjoy"><span class="lime">◆</span> Enjoy, User</div>
+
+<div class="grid" id="grid"></div>
+
+<footer>
+  <div class="footer-line">
+    <span class="dot"></span>
+    Ten interactive sculptures · click to explore
+    <span class="dot"></span>
+  </div>
+</footer>
+
+<div id="full">
+  <div class="bar">
+    <button class="back" id="fBack">← Back</button>
+    <div class="title-group">
+      <span class="num" id="fNum">01 / 10</span>
+      <h2 id="fTitle">Model</h2>
+    </div>
+    <div></div>
+  </div>
+  <div class="stage">
+    <canvas id="fCanvas"></canvas>
+    <button class="nav-arrow left" id="fPrev"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <button class="nav-arrow right" id="fNext"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
+    <div class="hint">DRAG TO ROTATE · SCROLL TO ZOOM · ESC TO EXIT</div>
+  </div>
+  <div class="foot">Use <span class="lime">←</span> <span class="lime">→</span> to switch · <span class="lime">ESC</span> to exit</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="models.js"></script>
+</body>
+</html>
