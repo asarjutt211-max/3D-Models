@@ -57,7 +57,6 @@ class Pointer {
     this.el.addEventListener('contextmenu', e => e.preventDefault());
 
     /* ---------- TOUCH ---------- */
-    // touchstart — NO preventDefault so tap→click still fires
     this.el.addEventListener('touchstart', e => {
       const t = e.changedTouches[0];
       const p = this.getPos(t.clientX, t.clientY);
@@ -69,7 +68,6 @@ class Pointer {
       this.hasMoved = false;
     }, { passive: true });
 
-    // touchmove — preventDefault ONLY when actively dragging
     this.el.addEventListener('touchmove', e => {
       const t = Array.from(e.touches).find(tt => tt.identifier === this.touchId);
       if (!t) return;
@@ -230,7 +228,7 @@ function animAsteroidBlaster() {
     ctx.fillText('SCORE · ' + score, 20, 30);
     ctx.font = '10px JetBrains Mono, monospace';
     ctx.fillStyle = rgba(C.rgb.stone, 0.7);
-    ctx.fillText('CLICK TO FIRE', 20, 50);
+    ctx.fillText('TAP TO FIRE', 20, 50);
     ctx.textAlign = 'right';
     ctx.fillText('ASTEROIDS: ' + asteroids.length, W - 20, 30);
     if (hitFlash > 0) {
@@ -264,12 +262,8 @@ function animCircuit() {
   }
   init();
 
-  function getNode(x, y) {
-    if (x < 0 || x >= COLS || y < 0 || y >= ROWS) return null;
-    return nodes[y * COLS + x];
-  }
   function layout(W, H) {
-    const pad = 80;
+    const pad = Math.max(40, Math.min(W, H) * 0.13);
     return { padX: pad, padY: pad, cellW: (W - pad * 2) / (COLS - 1), cellH: (H - pad * 2) / (ROWS - 1) };
   }
   function screenPos(n, W, H) {
@@ -298,7 +292,7 @@ function animCircuit() {
     if (p.in) {
       for (const n of nodes) {
         const pos = screenPos(n, W, H);
-        if (Math.hypot(p.x - pos.x, p.y - pos.y) < 22) { hovered = n; break; }
+        if (Math.hypot(p.x - pos.x, p.y - pos.y) < 26) { hovered = n; break; }
       }
     }
 
@@ -425,7 +419,7 @@ function animCircuit() {
     ctx.fillText('CIRCUIT · LAB', 20, 30);
     ctx.font = '10px JetBrains Mono, monospace';
     ctx.fillStyle = rgba(C.rgb.stone, 0.7);
-    ctx.fillText('DRAG BETWEEN NODES TO CONNECT · LIGHT UP TARGETS', 20, 50);
+    ctx.fillText('DRAG NODES TO CONNECT · LIGHT UP TARGETS', 20, 50);
     ctx.textAlign = 'right';
     ctx.font = 'bold 14px JetBrains Mono, monospace';
     ctx.fillStyle = C.lime;
@@ -532,7 +526,7 @@ function animReactor() {
     ctx.fillText('FUSION REACTOR', 20, 30);
     ctx.font = '10px JetBrains Mono, monospace';
     ctx.fillStyle = rgba(C.rgb.stone, 0.7);
-    ctx.fillText('CLICK TO INJECT FUEL · HOLD TO HEAT', 20, 50);
+    ctx.fillText('TAP TO INJECT · HOLD TO HEAT', 20, 50);
     ctx.textAlign = 'right';
     ctx.font = 'bold 14px JetBrains Mono, monospace';
     ctx.fillStyle = temp > 0.7 ? C.lime : C.bone;
@@ -582,7 +576,7 @@ function animWarpDrive() {
     ctx.font = '10px JetBrains Mono, monospace';
     ctx.textAlign = 'left';
     ctx.fillStyle = rgba(C.rgb.stone, 0.7);
-    ctx.fillText('HOLD MOUSE · FULL WARP', 20, 30);
+    ctx.fillText('HOLD TO WARP', 20, 30);
     ctx.textAlign = 'right';
     ctx.fillStyle = C.lime;
     ctx.fillText('WARP × ' + boost.toFixed(2), W - 20, 30);
@@ -633,8 +627,8 @@ function animLaser() {
     ctx.fillStyle = C.ink;
     ctx.fillRect(0, 0, W, H);
 
-    const pad = 70;
-    const gridW = W - pad * 2 - 80;
+    const pad = Math.max(40, Math.min(W, H) * 0.1);
+    const gridW = W - pad * 2 - 60;
     const gridH = H - pad * 2;
     const cellW = gridW / COLS;
     const cellH = gridH / ROWS;
@@ -658,7 +652,7 @@ function animLaser() {
       lx += dx; ly += dy;
       if (lx === COLS && ly === targetY) {
         hitTarget = true;
-        rayPoints.push({ x: pad + COLS * cellW + 40, y: pad + (targetY + 0.5) * cellH });
+        rayPoints.push({ x: pad + COLS * cellW + 30, y: pad + (targetY + 0.5) * cellH });
         break;
       }
       if (lx < 0 || lx >= COLS || ly < 0 || ly >= ROWS) {
@@ -704,30 +698,30 @@ function animLaser() {
       }
     }
 
-    const ex = pad - 40;
+    const ex = pad - 30;
     const ey = pad + (emitterY + 0.5) * cellH;
     ctx.fillStyle = C.lime;
-    ctx.beginPath(); ctx.arc(ex, ey, 10, 0, 6.28); ctx.fill();
-    const eg = ctx.createRadialGradient(ex, ey, 0, ex, ey, 24);
+    ctx.beginPath(); ctx.arc(ex, ey, 8, 0, 6.28); ctx.fill();
+    const eg = ctx.createRadialGradient(ex, ey, 0, ex, ey, 20);
     eg.addColorStop(0, rgba(C.rgb.lime, 0.5));
     eg.addColorStop(1, rgba(C.rgb.lime, 0));
     ctx.fillStyle = eg;
-    ctx.beginPath(); ctx.arc(ex, ey, 24, 0, 6.28); ctx.fill();
+    ctx.beginPath(); ctx.arc(ex, ey, 20, 0, 6.28); ctx.fill();
 
-    const tx = pad + COLS * cellW + 40;
+    const tx = pad + COLS * cellW + 30;
     const ty = pad + (targetY + 0.5) * cellH;
     ctx.strokeStyle = hitTarget ? C.lime : rgba(C.rgb.stone, 0.6);
     ctx.lineWidth = hitTarget ? 3 : 2;
-    ctx.beginPath(); ctx.arc(tx, ty, 14, 0, 6.28); ctx.stroke();
-    ctx.beginPath(); ctx.arc(tx, ty, 6, 0, 6.28);
+    ctx.beginPath(); ctx.arc(tx, ty, 12, 0, 6.28); ctx.stroke();
+    ctx.beginPath(); ctx.arc(tx, ty, 5, 0, 6.28);
     ctx.fillStyle = hitTarget ? C.lime : rgba(C.rgb.stone, 0.6);
     ctx.fill();
     if (hitTarget) {
-      const tg = ctx.createRadialGradient(tx, ty, 0, tx, ty, 40);
+      const tg = ctx.createRadialGradient(tx, ty, 0, tx, ty, 32);
       tg.addColorStop(0, rgba(C.rgb.lime, 0.5));
       tg.addColorStop(1, rgba(C.rgb.lime, 0));
       ctx.fillStyle = tg;
-      ctx.beginPath(); ctx.arc(tx, ty, 40, 0, 6.28); ctx.fill();
+      ctx.beginPath(); ctx.arc(tx, ty, 32, 0, 6.28); ctx.fill();
     }
 
     for (let i = 0; i < rayPoints.length - 1; i++) {
@@ -768,7 +762,7 @@ function animLaser() {
     ctx.fillText('LASER GRID · LV ' + level, 20, 30);
     ctx.font = '10px JetBrains Mono, monospace';
     ctx.fillStyle = rgba(C.rgb.stone, 0.7);
-    ctx.fillText('CLICK CELLS TO ROTATE MIRRORS · AIM LASER AT TARGET', 20, 50);
+    ctx.fillText('TAP CELLS TO ROTATE MIRRORS', 20, 50);
     ctx.textAlign = 'right';
     ctx.font = 'bold 14px JetBrains Mono, monospace';
     ctx.fillStyle = C.lime;
@@ -855,7 +849,7 @@ function animFirewall() {
     ctx.fillRect(0, 0, W, H);
 
     const laneH = H / LANES;
-    const firewallX = W - 100;
+    const firewallX = W - 80;
 
     ctx.strokeStyle = rgba(C.rgb.lime, 0.3);
     ctx.lineWidth = 1;
@@ -887,7 +881,7 @@ function animFirewall() {
       const q = packets[i];
       q.x += q.speed * dt;
 
-      if (p.justDown && p.in && Math.hypot(p.x - q.x, p.y - q.y) < q.size + 12) {
+      if (p.justDown && p.in && Math.hypot(p.x - q.x, p.y - q.y) < q.size + 14) {
         if (q.isVirus) {
           score += 10 * (1 + combo);
           combo++; comboTimer = 1.5;
@@ -951,9 +945,9 @@ function animFirewall() {
     ctx.fillStyle = rgba(C.rgb.stone, 0.7);
     ctx.fillText('FIREWALL', 20, 24);
     ctx.fillStyle = rgba(C.rgb.stone, 0.3);
-    ctx.fillRect(90, 16, 200, 8);
+    ctx.fillRect(90, 16, 160, 8);
     ctx.fillStyle = health > 40 ? C.lime : '#FF4444';
-    ctx.fillRect(90, 16, 200 * (health / 100), 8);
+    ctx.fillRect(90, 16, 160 * (health / 100), 8);
 
     ctx.textAlign = 'right';
     ctx.font = 'bold 14px JetBrains Mono, monospace';
@@ -961,7 +955,7 @@ function animFirewall() {
     ctx.fillText('SCORE · ' + score, W - 20, 30);
     ctx.font = '10px JetBrains Mono, monospace';
     ctx.fillStyle = rgba(C.rgb.stone, 0.7);
-    ctx.fillText('CLICK RED VIRUSES · LET GREEN DATA PASS', W - 20, 50);
+    ctx.fillText('TAP RED VIRUSES · LET GREEN PASS', W - 20, 50);
 
     if (combo > 1) {
       ctx.textAlign = 'center';
@@ -988,7 +982,7 @@ function animFirewall() {
       ctx.fillText('FINAL SCORE: ' + score, W / 2, H / 2 + 20);
       ctx.fillStyle = rgba(C.rgb.stone, 0.8);
       ctx.font = '11px JetBrains Mono, monospace';
-      ctx.fillText('CLICK TO REBOOT', W / 2, H / 2 + 60);
+      ctx.fillText('TAP TO REBOOT', W / 2, H / 2 + 60);
       if (p.justDown) { health = 100; score = 0; packets.length = 0; combo = 0; }
     }
   };
@@ -1012,7 +1006,7 @@ function animCosmicLens() {
     strength += (targetStrength - strength) * 0.08;
     const cx = p.in ? p.x : W / 2;
     const cy = p.in ? p.y : H / 2;
-    const lensR = 250;
+    const lensR = Math.min(W, H) * 0.5;
 
     function warp(x, y) {
       const dx = x - cx, dy = y - cy;
@@ -1107,7 +1101,7 @@ function animQuantum() {
   return (ctx, W, H, t, dt, p) => {
     ctx.fillStyle = 'rgba(14,14,12,0.15)';
     ctx.fillRect(0, 0, W, H);
-    const mouseR = 150;
+    const mouseR = Math.min(W, H) * 0.35;
 
     let collapsedCount = 0;
 
@@ -1182,7 +1176,7 @@ function animQuantum() {
     ctx.fillText('QUANTUM LAB', 20, 30);
     ctx.font = '10px JetBrains Mono, monospace';
     ctx.fillStyle = rgba(C.rgb.stone, 0.7);
-    ctx.fillText('MOVE CURSOR TO OBSERVE · PARTICLES COLLAPSE', 20, 50);
+    ctx.fillText('MOVE TO OBSERVE · PARTICLES COLLAPSE', 20, 50);
     ctx.textAlign = 'right';
     ctx.font = 'bold 14px JetBrains Mono, monospace';
     ctx.fillStyle = C.lime;
@@ -1266,7 +1260,7 @@ function animGalacticCollision() {
         ctx.fillRect(x, y, s.size, s.size);
       }
     }
-    const scaleA = 90, scaleB = 90;
+    const scaleA = Math.min(W, H) * 0.22, scaleB = Math.min(W, H) * 0.22;
     drawGalaxy(galaxyA, ax, ay, scaleA);
     drawGalaxy(galaxyB, bx, by, scaleB);
 
@@ -1310,7 +1304,7 @@ function animGalacticCollision() {
     ctx.fillText('DRAG A GALAXY · CAUSE COLLISION', 20, 30);
     ctx.textAlign = 'right';
     ctx.fillStyle = collisionFlash > 0.3 ? C.lime : rgba(C.rgb.stone, 0.7);
-    ctx.fillText(collisionFlash > 0.3 ? '◆ COLLISION ACTIVE' : 'DISTANCE: ' + Math.round(d), W - 20, 30);
+    ctx.fillText(collisionFlash > 0.3 ? '◆ COLLISION' : 'DISTANCE: ' + Math.round(d), W - 20, 30);
   };
 }
 
@@ -1375,9 +1369,8 @@ ANIMS.forEach((def, i) => {
     entry.ctx = r.ctx; entry.W = r.W; entry.H = r.H;
   }).observe(canvas);
 
-  /* ---- Tap detection: works on PC (click) and mobile (short tap) ---- */
-  let tStart = 0;
-  let tStartX = 0, tStartY = 0;
+  /* ---- Tap detection for opening fullscreen ---- */
+  let tStart = 0, tStartX = 0, tStartY = 0;
 
   card.addEventListener('touchstart', e => {
     const t = e.changedTouches[0];
@@ -1397,7 +1390,6 @@ ANIMS.forEach((def, i) => {
   }, { passive: true });
 
   card.addEventListener('click', e => {
-    // Skip synthetic clicks that came from touch (avoid double open)
     if (e.detail === 0) return;
     openFull(i);
   });
@@ -1438,6 +1430,7 @@ const fullEl = document.getElementById('full');
 const fCanvas = document.getElementById('fCanvas');
 const fNum = document.getElementById('fNum');
 const fTitle = document.getElementById('fTitle');
+const fTag = document.getElementById('fTag');      // optional element in HTML
 const fBack = document.getElementById('fBack');
 const fPrev = document.getElementById('fPrev');
 const fNext = document.getElementById('fNext');
@@ -1456,6 +1449,7 @@ function setFullAnimation(i) {
   const def = ANIMS[i];
   fNum.textContent = String(i + 1).padStart(2, '0') + ' / ' + ANIMS.length;
   fTitle.textContent = def.title;
+  if (fTag) fTag.textContent = def.tag;
 
   void fCanvas.offsetHeight;
 
