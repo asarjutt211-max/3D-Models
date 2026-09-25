@@ -13,7 +13,7 @@ function rand(a, b) { return a + Math.random() * (b - a); }
 function rint(a, b) { return Math.floor(rand(a, b)); }
 
 /* ================================================================
-   POINTER
+   POINTER — works perfectly on mouse AND touch
 ================================================================ */
 class Pointer {
   constructor(el) {
@@ -24,15 +24,19 @@ class Pointer {
     this.speed = 0;
     this.down = false; this.justDown = false; this.justUp = false;
     this.in = false;
+    this.touchId = null;
+    this.startX = 0; this.startY = 0;
+    this.hasMoved = false;
     this.bind();
   }
-  getPos(e) {
+  getPos(cx, cy) {
     const r = this.el.getBoundingClientRect();
-    return { x: e.clientX - r.left, y: e.clientY - r.top };
+    return { x: cx - r.left, y: cy - r.top };
   }
   bind() {
+    /* ---------- MOUSE ---------- */
     this.el.addEventListener('mousemove', e => {
-      const p = this.getPos(e);
+      const p = this.getPos(e.clientX, e.clientY);
       this.px = this.x; this.py = this.y;
       this.x = p.x; this.y = p.y;
       this.vx = this.x - this.px; this.vy = this.y - this.py;
@@ -42,30 +46,59 @@ class Pointer {
     this.el.addEventListener('mouseenter', () => { this.in = true; });
     this.el.addEventListener('mouseleave', () => { this.in = false; this.x = -9999; });
     this.el.addEventListener('mousedown', e => {
-      const p = this.getPos(e);
+      const p = this.getPos(e.clientX, e.clientY);
       this.x = p.x; this.y = p.y;
-      if (e.button === 0) { this.down = true; this.justDown = true; }
+      if (e.button === 0) { this.down = true; this.justDown = true; this.in = true; }
       e.preventDefault();
     });
-    window.addEventListener('mouseup', e => { if (e.button === 0) { this.down = false; this.justUp = true; } });
+    window.addEventListener('mouseup', e => {
+      if (e.button === 0) { this.down = false; this.justUp = true; }
+    });
     this.el.addEventListener('contextmenu', e => e.preventDefault());
+
+    /* ---------- TOUCH ---------- */
+    // touchstart — NO preventDefault so tap→click still fires
     this.el.addEventListener('touchstart', e => {
-      const r = this.el.getBoundingClientRect();
-      const t = e.touches[0];
-      this.x = t.clientX - r.left; this.y = t.clientY - r.top;
+      const t = e.changedTouches[0];
+      const p = this.getPos(t.clientX, t.clientY);
+      this.x = p.x; this.y = p.y;
+      this.px = p.x; this.py = p.y;
+      this.startX = p.x; this.startY = p.y;
+      this.touchId = t.identifier;
       this.down = true; this.justDown = true; this.in = true;
-      e.preventDefault();
-    }, { passive: false });
+      this.hasMoved = false;
+    }, { passive: true });
+
+    // touchmove — preventDefault ONLY when actively dragging
     this.el.addEventListener('touchmove', e => {
-      const r = this.el.getBoundingClientRect();
-      const t = e.touches[0];
+      const t = Array.from(e.touches).find(tt => tt.identifier === this.touchId);
+      if (!t) return;
+      const p = this.getPos(t.clientX, t.clientY);
       this.px = this.x; this.py = this.y;
-      this.x = t.clientX - r.left; this.y = t.clientY - r.top;
+      this.x = p.x; this.y = p.y;
       this.vx = this.x - this.px; this.vy = this.y - this.py;
       this.speed = Math.hypot(this.vx, this.vy);
-      e.preventDefault();
+      this.in = true;
+      if (Math.hypot(this.x - this.startX, this.y - this.startY) > 8) {
+        this.hasMoved = true;
+      }
+      if (this.hasMoved) {
+        e.preventDefault();
+      }
     }, { passive: false });
-    this.el.addEventListener('touchend', () => { this.down = false; this.justUp = true; });
+
+    this.el.addEventListener('touchend', e => {
+      const t = Array.from(e.changedTouches).find(tt => tt.identifier === this.touchId);
+      if (t) {
+        this.down = false; this.justUp = true;
+        this.touchId = null;
+      }
+    }, { passive: true });
+
+    this.el.addEventListener('touchcancel', () => {
+      this.down = false; this.justUp = true;
+      this.touchId = null;
+    });
   }
   endFrame() { this.justDown = false; this.justUp = false; }
   reset() { this.down = false; this.justDown = false; this.justUp = false; }
@@ -1342,7 +1375,32 @@ ANIMS.forEach((def, i) => {
     entry.ctx = r.ctx; entry.W = r.W; entry.H = r.H;
   }).observe(canvas);
 
-  card.addEventListener('click', () => openFull(i));
+  /* ---- Tap detection: works on PC (click) and mobile (short tap) ---- */
+  let tStart = 0;
+  let tStartX = 0, tStartY = 0;
+
+  card.addEventListener('touchstart', e => {
+    const t = e.changedTouches[0];
+    tStart = Date.now();
+    tStartX = t.clientX;
+    tStartY = t.clientY;
+  }, { passive: true });
+
+  card.addEventListener('touchend', e => {
+    const t = e.changedTouches[0];
+    const dtMs = Date.now() - tStart;
+    const dx = t.clientX - tStartX;
+    const dy = t.clientY - tStartY;
+    if (dtMs < 300 && Math.hypot(dx, dy) < 10) {
+      openFull(i);
+    }
+  }, { passive: true });
+
+  card.addEventListener('click', e => {
+    // Skip synthetic clicks that came from touch (avoid double open)
+    if (e.detail === 0) return;
+    openFull(i);
+  });
 });
 
 /* ================================================================
