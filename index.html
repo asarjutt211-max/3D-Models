@@ -2,11 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-<meta name="theme-color" content="#0E0E0C" />
-<meta name="mobile-web-app-capable" content="yes" />
-<meta name="apple-mobile-web-app-capable" content="yes" />
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 <title>3D Models — Home</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,24 +11,11 @@
 </head>
 <body>
 
-<!-- LOADING SCREEN -->
-<div class="preloader" id="preloader">
-  <div class="pl-inner">
-    <div class="pl-logo">◆</div>
-    <div class="pl-bar"><div class="pl-fill" id="plFill"></div></div>
-    <div class="pl-text" id="plText">Initializing universe</div>
-  </div>
-</div>
-
-<!-- CURSOR -->
 <div class="cur-dot"></div>
 <div class="cur-ring"></div>
 
-<!-- HEADER -->
 <header>
-  <a href="index.html" class="brand">
-    <span class="brand-dot"></span>3D MODELS
-  </a>
+  <a href="index.html" class="brand">3D MODELS</a>
   <nav>
     <a href="index.html" class="active">Home</a>
     <a href="models.html">Models</a>
@@ -41,66 +24,26 @@
   </nav>
 </header>
 
-<!-- MAIN CANVAS LAYERS -->
 <canvas id="warp"></canvas>
-<div class="nebula-layer"></div>
+
 <div class="vignette"></div>
 
-<!-- HERO -->
 <main class="hero">
-  <div class="label">
-    <span class="label-line"></span>
-    ◆ TEN LIVING WORLDS ◆
-    <span class="label-line"></span>
-  </div>
-  <h1 class="title">
-    <span class="title-line">3D</span>
-    <span class="title-line accent">MODELS</span>
-  </h1>
+  <div class="label">◆ TEN LIVING WORLDS ◆</div>
+  <h1>3D MODELS</h1>
   <p>Ten worlds, hand-crafted from scratch. 100% live in your browser — no videos. Enter and play.</p>
   <div class="actions">
-    <a href="animation.html" class="btn primary">
-      <span class="btn-text">ENTER WORLDS</span>
-      <span class="btn-arrow">→</span>
-    </a>
-    <a href="about.html" class="btn">
-      <span class="btn-text">HOW IT'S BUILT</span>
-    </a>
-  </div>
-
-  <!-- STATS BAR — DESKTOP ONLY -->
-  <div class="stats-bar">
-    <div class="stat">
-      <span class="stat-n">10</span>
-      <span class="stat-l">3D Sculptures</span>
-    </div>
-    <div class="stat-sep"></div>
-    <div class="stat">
-      <span class="stat-n">10</span>
-      <span class="stat-l">Animations</span>
-    </div>
-    <div class="stat-sep"></div>
-    <div class="stat">
-      <span class="stat-n">60<small>fps</small></span>
-      <span class="stat-l">Real-time</span>
-    </div>
+    <a href="animation.html" class="btn primary">ENTER WORLDS <span>→</span></a>
+    <a href="about.html" class="btn">HOW IT'S BUILT</a>
   </div>
 </main>
 
-<!-- HUD -->
 <div class="hud">
-  <!-- WARP status — always visible -->
-  <div class="hud-item hud-warp">
-    <span class="hud-dot"></span>
-    <span class="hud-text" id="hudStatus">WARP ACTIVE</span>
+  <div class="hud-item">
+    <span class="hud-dot"></span>WARP ACTIVE
   </div>
-  <!-- Desktop-only hints -->
   <div class="hud-item hud-desktop-only">
-    <span class="hud-hint">MOVE MOUSE TO STEER · CLICK FOR HYPERJUMP</span>
-  </div>
-  <!-- FPS — desktop only -->
-  <div class="hud-item hud-fps-wrap hud-desktop-only">
-    <span class="hud-fps" id="hudFps">60 FPS</span>
+    MOVE MOUSE TO STEER · CLICK TO ACCELERATE
   </div>
 </div>
 
