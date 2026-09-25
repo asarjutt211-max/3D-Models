@@ -887,7 +887,7 @@ const FACTORIES = [
 ];
 
 /* ================================================================
-   SHARED WEBGL RENDERER — sirf EK context poore page pe
+   SHARED WEBGL RENDERER
 ================================================================ */
 const sharedCanvas = document.createElement('canvas');
 sharedCanvas.width = CARD_W;
@@ -1076,8 +1076,14 @@ function swapToModel(i) {
   full.model.camera.updateProjectionMatrix();
   fNum.textContent = String(i + 1).padStart(2, '0') + ' / ' + FACTORIES.length;
   fTitle.textContent = full.model.title;
+
+  // MOBILE: zoom in thora taa ke model bara aur clear dikhe
+  const isMobileNow = window.innerWidth <= 768;
+  const startZoom = isMobileNow ? 1.35 : 1;
+
   full.rotX = 0.2; full.rotY = 0;
-  full.zoom = 1; full.targetZoom = 1;
+  full.zoom = startZoom;
+  full.targetZoom = startZoom;
   full.auto = true; full.autoDelay = 0;
   fPrev.classList.toggle('disabled', i === 0);
   fNext.classList.toggle('disabled', i === FACTORIES.length - 1);
@@ -1168,3 +1174,72 @@ document.addEventListener('mousemove', e => {
     document.body.classList.toggle('hov', isHov);
   }
 }, { capture: true, passive: true });
+
+/* ================================================================
+   TOUCH SUPPORT (mobile) — drag rotate + pinch zoom
+================================================================ */
+(function initTouch() {
+  const isTouchDevice = window.matchMedia('(hover: none) and (pointer: coarse)').matches
+               || ('ontouchstart' in window && navigator.maxTouchPoints > 0);
+  if (!isTouchDevice) return;
+
+  let pinchStart = 0;
+  let pinchStartZoom = 1;
+  let isPinching = false;
+
+  fCanvas.addEventListener('touchstart', e => {
+    if (!full.active) return;
+    e.preventDefault();
+    if (e.touches.length === 1) {
+      const t = e.touches[0];
+      full.dragging = true;
+      full.auto = false;
+      full.lastX = t.clientX;
+      full.lastY = t.clientY;
+      isPinching = false;
+    } else if (e.touches.length === 2) {
+      full.dragging = false;
+      isPinching = true;
+      const dx = e.touches[0].clientX - e.touches[1].clientX;
+      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      pinchStart = Math.hypot(dx, dy) || 1;
+      pinchStartZoom = full.targetZoom;
+    }
+  }, { passive: false });
+
+  fCanvas.addEventListener('touchmove', e => {
+    if (!full.active) return;
+    e.preventDefault();
+    if (e.touches.length === 1 && !isPinching) {
+      const t = e.touches[0];
+      const dx = t.clientX - full.lastX;
+      const dy = t.clientY - full.lastY;
+      if (Math.abs(dx) < 100 && Math.abs(dy) < 100) {
+        full.rotY += dx * 0.008;
+        full.rotX += dy * 0.008;
+        full.rotX = Math.max(-1.4, Math.min(1.4, full.rotX));
+      }
+      full.lastX = t.clientX;
+      full.lastY = t.clientY;
+    } else if (e.touches.length === 2) {
+      const dx = e.touches[0].clientX - e.touches[1].clientX;
+      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      const dist = Math.hypot(dx, dy);
+      const scale = dist / pinchStart;
+      full.targetZoom = Math.max(0.5, Math.min(3, pinchStartZoom * scale));
+    }
+  }, { passive: false });
+
+  fCanvas.addEventListener('touchend', e => {
+    if (!full.active) return;
+    if (e.touches.length === 0) {
+      full.dragging = false;
+      full.autoDelay = 1.5;
+      isPinching = false;
+    } else if (e.touches.length === 1) {
+      isPinching = false;
+      full.lastX = e.touches[0].clientX;
+      full.lastY = e.touches[0].clientY;
+    }
+  }, { passive: false });
+})();
